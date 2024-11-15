@@ -4,6 +4,7 @@ import pymongo  # MongoDB client
 import time
 import os
 from dotenv import load_dotenv
+import camera_module
 
 load_dotenv()
 

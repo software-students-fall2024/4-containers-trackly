@@ -1,0 +1,13 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+tensorflow
+keras
+torch
+jupyter
+notebook
+scipy
+requests
+flask
