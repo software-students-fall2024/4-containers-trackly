@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libffi-dev \
     python3-dev \
+    libopencv-dev \
+    python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pipenv
@@ -19,7 +21,7 @@ RUN pip install --no-cache-dir pipenv
 COPY Pipfile Pipfile.lock /app/
 
 # Install Python dependencies from Pipfile using pipenv
-RUN pipenv install --deploy --ignore-pipfile  # --ignore-pipfile ensures it uses the Pipfile.lock
+RUN pipenv install --deploy --ignore-pipfile
 
 # Copy the rest of the application code into the container
 COPY . /app

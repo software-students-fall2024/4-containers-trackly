@@ -9,6 +9,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -19,10 +20,83 @@
             font-size: 3rem;
             text-align: center;
         }
+        .stats {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #555;
+        }
+        .timer {
+            font-size: 2rem;
+            color: #007BFF;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .input-group {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group input {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to Trackly</h1>
+    <div class="stats">
+        Time Focused: <span class="timer" id="timer">Loading...</span>
+    </div>
+    <div class="input-group">
+        <input type="text" placeholder="Enter your name" id="nameInput">
+        <input type="text" placeholder="Enter your task" id="taskInput">
+    </div>
+    <div class="buttons">
+        <button onclick="window.location.href='start-focusing.html'">Start Focusing</button>
+        <button onclick="fetchFocusTime()">Refresh Stats</button>
+        <button onclick="submitData()">Submit</button>
+    </div>
+
+    <script>
+        async function fetchFocusTime() {
+            const response = await fetch('http://localhost:3000/focus-time');
+            const data = await response.json();
+            const hours = Math.floor(data.focusTime / 3600);
+            const minutes = Math.floor((data.focusTime % 3600) / 60);
+            const seconds = data.focusTime % 60;
+            document.getElementById('timer').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function submitData() {
+            const name = document.getElementById('nameInput').value;
+            const task = document.getElementById('taskInput').value;
+            console.log(`Name: ${name}, Task: ${task}`);
+            // Add your submission logic here
+        }
+
+        fetchFocusTime();
+    </script>
 </body>
 </html>
-
