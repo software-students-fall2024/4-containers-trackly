@@ -45,9 +45,10 @@ def create_app():
             # Handle the form submission
             name = request.form.get('name')
             task = request.form.get('task')
+            time = request.form.get('time')
 
             # Insert into the "tasks" collection
-            app.db["tasks"].insert_one({"name": name, "task": task})
+            app.db["tasks"].insert_one({"name": name, "task": task, "time": time})
             tasks = list(app.db["tasks"].find({}, {"_id": 0}))
             print(tasks)
 

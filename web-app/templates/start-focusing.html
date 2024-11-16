@@ -26,7 +26,7 @@
     <h1>Start Focusing</h1>
     <ul>
         {% for task in tasks %}
-            <li><strong>{{ task.name }}:</strong> {{ task.task }}</li>
+            <li><strong>{{ task.name }}:</strong> {{ task.task }}:</strong> {{ task.time }}:</li>
         {% else %}
             <li>No tasks available.</li>
         {% endfor %}
