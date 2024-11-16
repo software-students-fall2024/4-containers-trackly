@@ -34,16 +34,21 @@ services:
     build: 
       context: ./machine-learning-client
       dockerfile: Dockerfile
+    container_name: ML-client
     ports:
       - 5002:5002
     environment:
-      - MONGO_URI=mongodb://database:27017
+      - MONGO_URI=mongodb://mongodb:27017
     depends_on:
       - database
     networks:
       - shared-network
     volumes:
       - shared_data:/shared
+      - /dev/video0:/dev/video0
+    devices:
+      - /dev/video0
+    privileged: true
 networks:
   shared-network:
 volumes:
