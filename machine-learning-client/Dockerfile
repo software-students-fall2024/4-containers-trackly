@@ -8,16 +8,19 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
-    libhdf5-dev \
     libffi-dev \
     python3-dev \
-    libopencv-dev \
-    python3-opencv \
+    libgl1-mesa-glx \
+    libxrender1 \
+    libsm6 \
+    libxext6 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pipenv
 RUN pip install --no-cache-dir pipenv
 
+RUN pipenv install opencv-python-headless
 # Copy Pipfile and Pipfile.lock to the container
 COPY Pipfile Pipfile.lock /app/
 
