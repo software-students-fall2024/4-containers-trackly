@@ -24,6 +24,13 @@
 </head>
 <body>
     <h1>Start Focusing</h1>
+    <ul>
+        {% for task in tasks %}
+            <li><strong>{{ task.name }}:</strong> {{ task.task }}</li>
+        {% else %}
+            <li>No tasks available.</li>
+        {% endfor %}
+    </ul>
     <!-- Add your focus tracking functionality here -->
 </body>
 </html>

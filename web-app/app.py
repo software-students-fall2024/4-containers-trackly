@@ -3,7 +3,7 @@ Flask web application for Trackly
 """
 
 import os
-from flask import Flask, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from pymongo import MongoClient, errors
 from dotenv import load_dotenv
 
@@ -36,13 +36,35 @@ def create_app():
         print(f"Error configuring MongoDB Database: {fig_e}")
         app.db = None
 
-    @app.route("/")
+    @app.route("/", methods=['GET', 'POST'])
     def home():
         """
         Serves home page
         """
+        if request.method == 'POST':
+            # Handle the form submission
+            name = request.form.get('name')
+            task = request.form.get('task')
+
+            # Insert into the "tasks" collection
+            app.db["tasks"].insert_one({"name": name, "task": task})
+            tasks = list(app.db["tasks"].find({}, {"_id": 0}))
+            print(tasks)
+
+            # Redirect to the start-focusing page
+            return redirect(url_for('start_focusing'))
         return render_template("home.html")
 
+    @app.route('/start-focusing')
+    def start_focusing():
+        # Render the start-focusing screen (replace with your actual HTML rendering logic)
+        tasks = list(app.db["tasks"].find({}, {"_id": 0}))
+        if tasks:
+            print(f"Tasks: {tasks}")
+        else:
+            print("No tasks found.")
+        return render_template("start-focusing.html", tasks=tasks)
+        
     return app
 
 if __name__ == "__main__":
