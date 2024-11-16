@@ -1,5 +1,5 @@
 # Use a base Python image
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
+    libhdf5-dev \
     libffi-dev \
     python3-dev \
     libopencv-dev \

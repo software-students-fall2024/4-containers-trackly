@@ -27,7 +27,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongodb:27017
       - FLASK_PORT=5001
-      - ML_URL=http://machine-learning-client:5000
+      - ML_URL=http://machine-learning-client:5002
     volumes:
       - shared_data:/shared
   machine-learning-client:
@@ -35,7 +35,7 @@ services:
       context: ./machine-learning-client
       dockerfile: Dockerfile
     ports:
-      - 5000:5000
+      - 5002:5002
     environment:
       - MONGO_URI=mongodb://database:27017
     depends_on:
