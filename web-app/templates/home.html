@@ -68,15 +68,24 @@
     <div class="stats">
         Time Focused: <span class="timer" id="timer">Loading...</span>
     </div>
-    <div class="input-group">
+    <!-- <div class="input-group">
         <input type="text" placeholder="Enter your name" id="nameInput">
         <input type="text" placeholder="Enter your task" id="taskInput">
-    </div>
-    <div class="buttons">
+    </div> -->
+    <form action="/" method="POST">
+        <div class="input-group">
+            <input type="text" placeholder="Enter your name" id="nameInput" name="name" required>
+            <input type="text" placeholder="Enter your task" id="taskInput" name="task" required>
+        </div>
+        <div class="buttons">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+    <!-- <div class="buttons">
         <button onclick="window.location.href='start-focusing.html'">Start Focusing</button>
         <button onclick="fetchFocusTime()">Refresh Stats</button>
         <button onclick="submitData()">Submit</button>
-    </div>
+    </div> -->
 
     <script>
         async function fetchFocusTime() {
