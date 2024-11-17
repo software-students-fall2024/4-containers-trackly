@@ -65,7 +65,6 @@ def create_app():
         else:
             print("No tasks found.")
         return render_template("start-focusing.html", tasks=tasks)
-        
     return app
 
 if __name__ == "__main__":
