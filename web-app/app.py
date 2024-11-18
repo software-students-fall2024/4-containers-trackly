@@ -3,9 +3,11 @@ Flask web application for Trackly
 """
 
 import os
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, Response,render_template, redirect, url_for
 from pymongo import MongoClient, errors
 from dotenv import load_dotenv
+import cv2
+camera=cv2.VideoCapture(0)
 
 load_dotenv()
 
@@ -18,10 +20,10 @@ def create_app():
 
     app = Flask(__name__)
 
-    mongo_uri = os.getenv("MONGO_URI")
+    mongo_uri = os.getenv("MONGO_URI","mongodb://localhost:27017")
 
     if mongo_uri is None:
-        raise ValueError("Error with URI")
+        raise ValueError("Error with mongo_URI")
 
     try:
         client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
@@ -35,6 +37,16 @@ def create_app():
     except errors.ConfigurationError as fig_e:
         print(f"Error configuring MongoDB Database: {fig_e}")
         app.db = None
+    def generate_frames():
+        while True:
+            sucess, frame = camera.read()
+            if not sucess:
+                break
+            else:
+                ret, buffer = cv2.imencode('.jpg',frame)
+                frame=buffer.tobytes()
+            yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     @app.route("/", methods=['GET', 'POST'])
     def home():
@@ -64,7 +76,10 @@ def create_app():
             print(f"Tasks: {tasks}")
         else:
             print("No tasks found.")
-        return render_template("start-focusing.html", tasks=tasks)
+        return render_template("start-focusing.html")
+    @app.route('/camera')
+    def video():
+        return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
     return app
 
 if __name__ == "__main__":

@@ -10,6 +10,8 @@ flask = "*"
 pymongo = "*"
 python-dotenv = "*"
 pytest = "*"
+opencv-python-headless = "*"
+opencv-python = "*"
 
 [dev-packages]
 

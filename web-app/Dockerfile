@@ -10,6 +10,7 @@ COPY . /app
 # Upgrade pip
 RUN python -m pip install --upgrade pip
 
+RUN pip install opencv-python-headless
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
