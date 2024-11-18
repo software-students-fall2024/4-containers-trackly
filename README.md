@@ -4,9 +4,53 @@
 
 # Containerized App Exercise
 
-# Project Name
+## Project Name
 
-[Short description.]
+Trackly
+
+### Project Description 
+
+Trackly is your virtual study companion that uses eye-tracking technology to monitor focus and help you stay on task. By ensuring you maintain consistent attention, Trackly keeps you accountable and maximizes your productivity. 
+
+## Project structure
+
+```text
+.
+├── machine_learning_client
+│   ├── camera_module.py
+│   ├── client.py
+│   ├── database.py
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── readme.txt
+│   ├─ requirments.text 
+│   └── SOON:test_client or test_module.py
+├── mongoddb
+│   └── Dockerfile
+├── web-app
+│   ├── static
+│   │   ├── css
+│   │   │   └── index.css
+│   │   └── app.js
+│   ├── templates
+│   ├── ├─ start-focusing.html
+│   │   └── home.html
+│   ├── app.py
+│   ├── Docker-compose.yml
+│   ├── Dockerfile
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── readme.txt
+│   ├── requirements.txt
+│   └── SOON:test_app.py
+├── .gitignore
+├── docker-compose.yml
+├── instructions.md
+├── LICENSE
+└── README.md
+```
 
 ## Setup Instructions
 
@@ -41,8 +85,16 @@ pipenv shell
 docker compose up --build -d
 ```
 
-### 5. Stop docker containers
+### 6. Stop docker containers
 
 ```
 docker compose down
 ```
+## Task boards
+[The Task board for our team](https://github.com/orgs/software-students-fall2024/projects/109)
+
+## Team Members
+- [Hugo Bray (hwb4547)](https://github.com/BringoJr)
+- [Ethan Cheng (ehc7678)](https://github.com/ethanhcheng)
+- [Nuzhat Bushra(ntb5562@nyu.edu)](https://github.com/ntb5562)
+- [Tamara Bueno (tb2803)](https://github.com/TamaraBuenoo)
