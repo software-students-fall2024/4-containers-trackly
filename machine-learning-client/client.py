@@ -9,7 +9,7 @@ import camera_module
 load_dotenv()
 
 # MongoDB setup
-mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+mongo_uri = os.getenv("MONGO_URI")
 client = pymongo.MongoClient(mongo_uri)
 db = client['productivity_db']
 collection = db['focus_data']
