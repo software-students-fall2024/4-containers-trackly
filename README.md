@@ -12,7 +12,7 @@ Trackly
 
 Trackly is your virtual study companion that uses eye-tracking technology to monitor focus and help you stay on task. By ensuring you maintain consistent attention, Trackly keeps you accountable and maximizes your productivity. 
 
-## Project structure
+### Project structure
 
 ```text
 .
