@@ -3,7 +3,8 @@ Flask web application for Trackly
 """
 
 import os
-from flask import Flask, request, Response,render_template, redirect, url_for
+from flask import Flask, request, Response,render_template, redirect, url_for, jsonify
+import requests
 from pymongo import MongoClient, errors
 from dotenv import load_dotenv
 
@@ -65,10 +66,30 @@ def create_app():
         else:
             print("No tasks found.")
         return render_template("start-focusing.html") #tasks=tasks
-    @app.route('file-data', methods=["POST"])
-    def file_data():
-        # save file to shared-data volume
-        return
+    
+   
+    @app.route('/file-data', methods=['POST'])
+    def handle_video_upload():
+        # Retrieve the uploaded file
+        uploaded_file = request.files['file']
+        if uploaded_file:
+            # Save the file temporarily
+            video_path = "uploaded_video.webm"
+            uploaded_file.save(video_path)
+            
+            # Send the video to the ML client for processing
+            ml_client_url = "http://machine-learning-client:5002/process-video"  # Replace with ML client URL
+            with open(video_path, 'rb') as video:
+                response = requests.post(ml_client_url, files={"file": video})
+            if response.status_code == 200:
+                print("Video processed successfully:", response.json())
+            else:
+                print("Error in processing video:", response.text)
+            # Return the ML client's response to the front end
+            return jsonify(response.json()), response.status_code
+        else:
+            return jsonify({"error": "No file uploaded"}), 400
+
 
     return app
 

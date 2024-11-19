@@ -7,6 +7,7 @@ import pymongo
 import time
 import os
 from dotenv import load_dotenv
+from flask import Flask, request, jsonify
 
 load_dotenv()
 
@@ -15,12 +16,33 @@ mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 client = pymongo.MongoClient(mongo_uri)
 db = client['productivity_db']
 collection = db['focus_data']
+app = Flask(__name__)
 
-def capture_focus_data():
+@app.route('/process-video', methods=['POST'])
+def process_video():
+    uploaded_file = request.files['file']
+    if uploaded_file:
+        # Save the file temporarily
+        video_path = "processed_video.webm"
+        uploaded_file.save(video_path)
+        capture_focus_data(uploaded_file)
+        # Run your ML model or processing logic here
+        # Example: result = your_ml_model.process(video_path)
+        result = {"message": "Video processed successfully!"}
+        
+        # Return the result
+        return jsonify(result), 200
+    else:
+        return jsonify({"error": "No file received"}), 400
+
+def capture_focus_data(file):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+    
+    temp_path = "temp_video.webm"
+    file.save(temp_path)
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(temp_path)
     start_time = None
     focus_time = 0
 
@@ -58,11 +80,14 @@ def capture_focus_data():
     cap.release()
     cv2.destroyAllWindows()
 
+    print("file is processed")
     # Save to MongoDB
     focus_metric = {"timestamp": time.time(), "focus_time": focus_time}
     collection.insert_one(focus_metric)
 
 if __name__ == "__main__":
+    app.run(port=5002)
+# if __name__ == "__main__":
     try:
         print("Starting focus monitor...")
         capture_focus_data()
