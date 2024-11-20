@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import subprocess
 import sys
 import time
+import logging
 
 sys.path.append('/app/machine-learning-client')
 # from camera_module import start_camera
@@ -24,6 +25,14 @@ def create_app():
     """
 
     app = Flask(__name__)
+    logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
 
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 
@@ -152,6 +161,7 @@ def create_app():
         
         # Save the file temporarily
         video_path = "uploaded_video.webm"
+        app.logger.info("testing file-data upload ")
         uploaded_file.save(video_path)
         
         # Send the video to the ML client for processing
@@ -181,7 +191,7 @@ def create_app():
                 return redirect(url_for('session_details', total_time = result['total_time'], focused_time=result['focused_time']))
             else:
                 print("Error in processing video:", response.text)
-                return jsonify({"error": "ML client error", "details": response.text}), response.status_code
+                return jsonify({"error app.py": "ML client error", "details": response.text}), response.status_code
         except requests.ConnectionError as e:
             print(f"Error connecting to ML client: {e}")
             return jsonify({"error": "Unable to connect to ML Client", "details": str(e)}), 500

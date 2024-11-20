@@ -119,32 +119,33 @@
             recordedChunks = [];
             mediaRecorder = new MediaRecorder(videoStream, { mimeType: "video/webm" });
 
-            // Collect recorded chunks
-            mediaRecorder.ondataavailable = function (event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            };
+            // // Collect recorded chunks
+            // mediaRecorder.onstop = async function () {
+            //     const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+            //     const videoURL = URL.createObjectURL(videoBlob);
 
-            mediaRecorder.onstop = async function () {
-                const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-                const videoURL = URL.createObjectURL(videoBlob);
+            //     downloadLink.href = videoURL;
+            //     downloadLink.style.display = "inline";
+            //     downloadLink.textContent = "Download Recorded Video";
 
-                downloadLink.href = videoURL;
-                downloadLink.style.display = "inline";
-                downloadLink.textContent = "Download Recorded Video";
+            //     const formData = new FormData();
+            //     formData.append("file", videoBlob, "recorded-video.webm");
 
-                const formData = new FormData();
-                formData.append("file", videoBlob, "recorded-video.webm");
-
-                try {
-                    const response = await fetch("/file-data", { method: "POST", body: formData });
-                    const result = await response.json();
-                    console.log("Server response:", result);
-                } catch (error) {
-                    console.error("Error uploading video:", error);
-                }
-            };
+            //     try {
+            //         const response = await fetch("/file-data", { method: "POST", body: formData });
+            //         const result = await response.json();
+            //         console.log("Server response:", result);
+            //     } catch (error) {
+            //         console.error("Error uploading video:", error);
+            //     }
+            // };
+            // mediaRecorder.ondataavailable = function (event) {
+            //     if (event.data.size > 0) {
+            //         recordedChunks.push(event.data);
+            //         console.log("putting stuff in record")
+            //         console.log(recordedChunks)
+            //     }
+            // };
 
             mediaRecorder.start();
             startRecord.disabled = true;
@@ -158,16 +159,38 @@
             mediaRecorder.stop();
             startRecord.disabled = false;
             stopRecord.disabled = true;
+            // Collect recorded chunks
+            mediaRecorder.onstop = async function () {
+                const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+                const videoURL = URL.createObjectURL(videoBlob);
 
-            console.log("Recording stopped.");
-            const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+                downloadLink.href = videoURL;
+                downloadLink.style.display = "inline";
+                downloadLink.textContent = "Download Recorded Video";
+
+                const formData = new FormData();
+                formData.append("file", videoBlob, "recorded-video.webm");
+
+                // try {
+                //     const response = await fetch("/file-data", { method: "POST", body: formData });
+                //     const result = await response.json();
+                //     console.log("Server response:", result);
+                // } catch (error) {
+                //     console.error("Error uploading video:", error);
+                // }
+            };
+            mediaRecorder.ondataavailable = async function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                    console.log("putting stuff in record")
+                    console.log(recordedChunks)
+                    const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
             const videoURL = URL.createObjectURL(videoBlob);
-            console.log(recordedChunks)
             console.log(videoBlob.size)
             const formData = new FormData();
             formData.append("file", videoBlob, "recorded-video.webm");
             for (let [key, value] of formData.entries()) { console.log(key, value); }
-
+            
             try {
                 const response = await fetch("/file-data", { method: "POST", body: formData });
                 if (response.redirected) {
@@ -178,7 +201,11 @@
             } catch (error) {
                 console.error("Error uploading video:", error);
             }
+                }
+            };
+            console.log("Recording stopped.");
         };
+        
     </script>
 </body>
 </html>

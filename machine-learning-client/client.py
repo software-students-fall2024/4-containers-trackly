@@ -52,8 +52,18 @@
 from flask import Flask, request, jsonify
 import os
 from camera_module import start_camera
+import logging
 
 app = Flask(__name__)
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
 result = {}
 
 @app.route('/process-video', methods=['GET','POST'])
@@ -66,11 +76,16 @@ def process_video():
         
         try:
             video_path = os.path.join("/tmp", uploaded.filename)
-            uploaded.save(video_path)
+            app.logger.info(uploaded)
+            # uploaded.save(video_path)
             app.logger.info(f"File saved to: {video_path}")
 
             ## Machine Learning algorithm for calculation here
-            total_time, focused_time = start_camera(video_path)
+            total_time, focused_time = 0, 0
+            try:
+                total_time, focused_time = start_camera(video_path)
+            except:
+                app.logger.info("client.py, start-camera failed")
 
             # total_time = 600
             # focused_time = 450
@@ -82,7 +97,7 @@ def process_video():
             }
             return jsonify(result), 200
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"client.py error": str(e)}), 500
     elif request.method == 'GET':
        try:
            if not result:
