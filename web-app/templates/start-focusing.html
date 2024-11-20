@@ -7,13 +7,14 @@
     <style>
         body {
             margin: 0;
+            padding: 20px;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f4f4f9;
+            background: linear-gradient(120deg, #def5ff, #baffb5);
         }
 
         h1 {
@@ -37,7 +38,7 @@
         video {
             margin-top: 20px;
             border: 2px solid #333;
-            border-radius: 8px;
+            border-radius: 25px;
         }
 
         button {
@@ -45,24 +46,28 @@
             padding: 10px 20px;
             font-size: 1rem;
             color: #fff;
-            background-color: #007BFF;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            background-color:  #8ddbfc;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         button:disabled {
             background-color: #999;
+            
         }
 
         button:hover:not(:disabled) {
-            background-color: #0056b3;
+            opacity: 70%;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);  
         }
 
         a {
             margin-top: 10px;
             font-size: 1rem;
-            color: #007BFF;
+            color:  #8ddbfc;
             text-decoration: none;
         }
 
