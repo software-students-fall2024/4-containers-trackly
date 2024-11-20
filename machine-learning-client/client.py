@@ -49,3 +49,20 @@
 #         capture_focus_data()
 #     except Exception as e:
 #         print(f"An error occurred rip: {e}")
+import time
+
+def process_video(video_path):
+
+    print(f"processing video at {video_path}")
+    time.sleep(5)
+    print("Processing complete.")
+    return {"status": "success", "message": "Video processed successfully"}
+
+def main():
+
+    print("ML Client waiting for task")
+    while True:
+        time.sleep(10)
+
+if __name__ =="__main__":
+    main()

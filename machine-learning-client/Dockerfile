@@ -33,4 +33,4 @@ RUN pipenv install --deploy --ignore-pipfile
 COPY . /app
 
 # Define the default command to run the client
-CMD ["pipenv", "run", "python", "client.py"]
+CMD ["python", "client.py"]

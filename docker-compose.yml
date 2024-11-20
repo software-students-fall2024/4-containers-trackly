@@ -43,6 +43,7 @@ services:
       - database
     networks:
       - shared-network
+    restart: unless-stopped
     volumes:
       - shared_data:/shared
     privileged: true

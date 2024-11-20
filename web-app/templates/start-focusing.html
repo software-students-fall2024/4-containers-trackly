@@ -12,13 +12,62 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #f4f4f9;
         }
+
         h1 {
             color: #333;
-            font-size: 3rem;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
             text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        video {
+            margin-top: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #999;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        a {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -26,67 +75,87 @@
     <h1>Start Focusing</h1>
     <ul>
         {% for task in tasks %}
-            <li><strong>{{ task.name }}:</strong> {{ task.task }}:</strong> {{ task.time }}:</li>
+            <li><strong>{{ task.name }}:</strong> {{ task.task }} ({{ task.time }} minutes)</li>
         {% else %}
             <li>No tasks available.</li>
         {% endfor %}
     </ul>
+
     <h2>Live Stream</h2>
     <!-- Add your focus tracking functionality here -->
-     <!-- Trying to add webcam -->
-      <video id="video" width = "480" height = "360" autoplay></video> <br>
-      <button id = "startRecord">Start Recording</button>
-      <button id = "stopRecord">Stop Recording</button>
-      <a id="downloadingLink" download = "video.mp4">Download Video</a>
+    <!-- Trying to add webcam -->
+    <video id="video" width="480" height="360" autoplay></video> <br>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+    <a id="downloadingLink" download="video.webm" style="display: none;">Download Video</a>
 
-      <script type="text/javascript">
-        var video = document.querySelector("#video");
-        var startRecord = document.querySelector("#startRecord");
-        var stopRecord = document.querySelector("#stopRecord");
-        var downloadLink = document.querySelector("#downloadingLink");
-    
+    <script type="text/javascript">
+        const video = document.querySelector("#video");
+        const startRecord = document.querySelector("#startRecord");
+        const stopRecord = document.querySelector("#stopRecord");
+        const downloadLink = document.querySelector("#downloadingLink");
+
         let mediaRecorder;
         let videoStream;
-    
-        window.onload = async function () {
-            stopRecord.style.display = "none";
-    
-            // Request user media
-            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            video.srcObject = videoStream;
-        };
-    
-        startRecord.onclick = function () {
-            startRecord.style.display = "none";
-            stopRecord.style.display = "inline";
-    
-            // Initialize MediaRecorder
-            mediaRecorder = new MediaRecorder(videoStream);
-            let blob = [];
-            mediaRecorder.addEventListener("dataavailable", function (e) {
-                blob.push(e.data);
-            });
-            mediaRecorder.addEventListener("stop", async function() {
-                const blobFile = new Blob(blob, { type: "video/webm" });
-                const formData = new FormData();
-                formData.append("file", blobFile, "recorded-video.webm");
-                // sending file to the server
-                await fetch("http://localhost:5001/file-data", { method: "POST", body: formData })
-                    .then(response => response.json())
-                    .then(data => console.log(data))
-                    .catch(error => console.error("Error uploading file:", error));
+        let recordedChunks = [];
 
-            });
-    
-            mediaRecorder.start();
+        window.onload = async function () {
+            // Request user media
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                video.srcObject = videoStream;
+            } catch (error) {
+                alert("Error accessing camera or microphone. Please check permissions.");
+                console.error("Camera error:", error);
+            }
         };
-    
+
+        startRecord.onclick = function () {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(videoStream, { mimeType: "video/webm" });
+
+            // Collect recorded chunks
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async function () {
+                const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+                const videoURL = URL.createObjectURL(videoBlob);
+
+                downloadLink.href = videoURL;
+                downloadLink.style.display = "inline";
+                downloadLink.textContent = "Download Recorded Video";
+
+                const formData = new FormData();
+                formData.append("file", videoBlob, "recorded-video.webm");
+
+                try {
+                    const response = await fetch("/file-data", { method: "POST", body: formData });
+                    const result = await response.json();
+                    console.log("Server response:", result);
+                } catch (error) {
+                    console.error("Error uploading video:", error);
+                }
+            };
+
+            mediaRecorder.start();
+            startRecord.disabled = true;
+            stopRecord.disabled = false;
+            downloadLink.style.display = "none";
+
+            console.log("Recording started...");
+        };
+
         stopRecord.onclick = function () {
             mediaRecorder.stop();
-            startRecord.style.display = "inline";
-            stopRecord.style.display = "none";
-        };
+            startRecord.disabled = false;
+            stopRecord.disabled = true;
 
+            console.log("Recording stopped.");
+        };
     </script>
 </body>
 </html>
