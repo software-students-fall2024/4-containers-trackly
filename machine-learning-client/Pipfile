@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pylint = "*"
 black = "*"
+flask = "*"
 opencv-python-headless = "*"
 opencv-python = "*"
 pymongo = "*"

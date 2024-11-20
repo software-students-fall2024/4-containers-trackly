@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pipenv
+RUN pip install flask
+
 RUN pip install --no-cache-dir pipenv
 
 RUN pipenv install opencv-python-headless
@@ -31,4 +33,4 @@ RUN pipenv install --deploy --ignore-pipfile
 COPY . /app
 
 # Define the default command to run the client
-CMD ["pipenv", "run", "python", "client.py"]
+CMD ["python", "client.py"]

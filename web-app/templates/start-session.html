@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Session</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        video {
+            margin: 20px 0;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #999;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        #results {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Start Session</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="startSession">Start Session</button>
+    <div id="results"></div>
+
+    <script>
+        const video = document.querySelector("#video");
+        const startSessionButton = document.querySelector("#startSession");
+        const resultsDiv = document.querySelector("#results");
+
+        let videoStream;
+
+        // Initialize the webcam
+        window.onload = async function () {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = videoStream;
+            } catch (error) {
+                alert("Error accessing webcam. Please check permissions.");
+                console.error("Webcam error:", error);
+                resultsDiv.innerHTML = "<p style='color: red;'>Unable to access webcam.</p>";
+            }
+        };
+
+        // Start the session
+        startSessionButton.onclick = async function () {
+            resultsDiv.innerHTML = "<p>Starting session...</p>";
+            startSessionButton.disabled = true;
+
+            try {
+                const response = await fetch("/start-session", { method: "POST" });
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML = `
+                        <h2>Session Results</h2>
+                        <p>Total Time: ${data.data.total_time} seconds</p>
+                        <p>Focused Time: ${data.data.focused_time} seconds</p>
+                    `;
+                } else {
+                    const error = await response.json();
+                    resultsDiv.innerHTML = `<p style='color: red;'>Error: ${error.error}</p>`;
+                }
+            } catch (error) {
+                console.error("Session error:", error);
+                resultsDiv.innerHTML = "<p style='color: red;'>Unexpected error occurred.</p>";
+            } finally {
+                startSessionButton.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

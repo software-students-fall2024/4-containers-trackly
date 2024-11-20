@@ -14,8 +14,8 @@ services:
 
   flask-app:
     build: 
-      context: ./web-app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: web-app/Dockerfile
     container_name: flask-app
     ports:
       - "5001:5001"
@@ -43,11 +43,9 @@ services:
       - database
     networks:
       - shared-network
+    restart: unless-stopped
     volumes:
       - shared_data:/shared
-      - /dev/video0:/dev/video0
-    devices:
-      - /dev/video0
     privileged: true
 
 networks:
