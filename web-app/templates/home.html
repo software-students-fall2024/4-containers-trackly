@@ -7,18 +7,24 @@
     <style>
         body {
             margin: 0;
+            padding: 10px;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f9;
+            background: linear-gradient(120deg, #def5ff, #baffb5);
+            margin-bottom: 10px;
+            margin-top: -20px; /* Adjust this value to move it higher */
         }
         h1 {
-            color: #333;
+            color: #ffffff;
             font-size: 3rem;
             text-align: center;
+            margin-bottom: 10px;
+            margin-top: -30px; /* Adjust this value to move it higher */
+
         }
         button {
             margin-top: 20px;
@@ -26,18 +32,41 @@
             font-size: 1.5rem;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
+            border-radius: 20px;
+            background-color: #8ddbfc;
             color: white;
-            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            opacity: 70%;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);    
         }
+
+        img.logo {
+            max-width: 100%;
+            max-height: 50vh;
+            object-fit: contain;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        img.StudyBoy {
+            max-width: 80%; /* Adjust this value to make it smaller (percentage or pixels) */
+            max-height: 40vh; /* Optional: Limit the height to make it smaller */
+            object-fit: contain;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+
     </style>
 </head>
 <body>
-    <h1>Welcome to Trackly</h1>
+    <h1>Welcome to </h1>
+    <img src="{{ url_for('static', filename='Logo.png') }}" class="logo"/>
+    <img src="{{ url_for('static', filename='StudyBoy.png') }}" class="StudyBoy"/>
     <button onclick="window.location.href='/start-focusing'">Start Tracklying</button>
 </body>
 </html>
