@@ -7,13 +7,15 @@
     <style>
         body {
             margin: 0;
+            padding: 20px;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f4f4f9;
+            background: linear-gradient(120deg, #def5ff, #baffb5);
+        
         }
 
         h1 {
@@ -34,10 +36,13 @@
             padding: 10px 20px;
             font-size: 1rem;
             color: #fff;
-            background-color: #007BFF;
+            background-color:  #8ddbfc;
             border: none;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         button:disabled {
@@ -45,7 +50,10 @@
         }
 
         button:hover:not(:disabled) {
-            background-color: #0056b3;
+            background-color:  #8ddbfc;
+            opacity: 70%;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px); 
         }
 
         #results {
