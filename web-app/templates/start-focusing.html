@@ -161,15 +161,19 @@
 
             console.log("Recording stopped.");
             const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+            const videoURL = URL.createObjectURL(videoBlob);
+            console.log(recordedChunks)
+            console.log(videoBlob.size)
             const formData = new FormData();
             formData.append("file", videoBlob, "recorded-video.webm");
+            for (let [key, value] of formData.entries()) { console.log(key, value); }
 
             try {
                 const response = await fetch("/file-data", { method: "POST", body: formData });
                 if (response.redirected) {
                     window.location.href = response.url;  // Redirect to session details page
                 } else {
-                    console.error("Error uploading video:", await response.json());
+                    console.error("Error uploading video fetch:", await response.json());
                 }
             } catch (error) {
                 console.error("Error uploading video:", error);

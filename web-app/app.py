@@ -12,7 +12,7 @@ import sys
 import time
 
 sys.path.append('/app/machine-learning-client')
-from camera_module import start_camera
+# from camera_module import start_camera
 
 load_dotenv()
 
@@ -109,11 +109,17 @@ def create_app():
         video_path = "session_video.avi"
         
         try:
-            total_time, focused_time = start_camera(video_path)
-            session_data = {
-                "total_time": total_time,
-                "focused_time": focused_time
-            }
+            # total_time, focused_time = start_camera(video_path)
+            # session_data = {
+            #     "total_time": total_time,
+            #     "focused_time": focused_time
+            # }
+            ml_video_info = "http://machine-learning-client:5002/process-video"
+            response = requests.get(ml_video_info)
+            if response.status_code != 200:
+                return jsonify({"error": str(e)}), {response.status_code}
+            
+            session_data = response.json()
 
             ml_client_url = "http://machine-learning-client:5002/process-session"
             response = requests.post(ml_client_url, json=session_data)
@@ -136,7 +142,9 @@ def create_app():
     @app.route('/file-data', methods=['POST'])
     def handle_video_upload():
         # Retrieve the uploaded file
+        app.logger.info(request.files)
         uploaded_file = request.files.get("file")
+        app.logger.info(uploaded_file)
         if not uploaded_file:
             return jsonify({"error": "No file"}), 400
         

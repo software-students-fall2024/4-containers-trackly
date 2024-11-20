@@ -40,11 +40,11 @@ def start_camera(output_video):
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
     
-    # temp_path = "temp_video.webm"
-    # file.save(temp_path)
+    temp_path = "temp_video.webm"
+    output_video.save(temp_path)
 
-    # cap = cv2.VideoCapture(temp_path)
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(temp_path)
+    # cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         raise Exception("Could not access webcam")
     
