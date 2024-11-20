@@ -31,6 +31,7 @@
             <li>No tasks available.</li>
         {% endfor %}
     </ul>
+    <h2>Live Stream</h2>
     <!-- Add your focus tracking functionality here -->
      <!-- Trying to add webcam -->
       <video id="video" width = "480" height = "360" autoplay></video> <br>
@@ -65,9 +66,16 @@
             mediaRecorder.addEventListener("dataavailable", function (e) {
                 blob.push(e.data);
             });
-            mediaRecorder.addEventListener("stop", function () {
-                var videoLocal = URL.createObjectURL(new Blob(blob));
-                downloadLink.href = videoLocal;
+            mediaRecorder.addEventListener("stop", async function() {
+                const blobFile = new Blob(blob, { type: "video/webm" });
+                const formData = new FormData();
+                formData.append("file", blobFile, "recorded-video.webm");
+                // sending file to the server
+                await fetch("http://localhost:5001/file-data", { method: "POST", body: formData })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error("Error uploading file:", error));
+
             });
     
             mediaRecorder.start();
@@ -78,6 +86,7 @@
             startRecord.style.display = "inline";
             stopRecord.style.display = "none";
         };
+
     </script>
 </body>
 </html>
