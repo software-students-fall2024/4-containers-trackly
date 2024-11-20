@@ -149,12 +149,26 @@
             console.log("Recording started...");
         };
 
-        stopRecord.onclick = function () {
+        stopRecord.onclick = async function () {
             mediaRecorder.stop();
             startRecord.disabled = false;
             stopRecord.disabled = true;
 
             console.log("Recording stopped.");
+            const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+            const formData = new FormData();
+            formData.append("file", videoBlob, "recorded-video.webm");
+
+            try {
+                const response = await fetch("/file-data", { method: "POST", body: formData });
+                if (response.redirected) {
+                    window.location.href = response.url;  // Redirect to session details page
+                } else {
+                    console.error("Error uploading video:", await response.json());
+                }
+            } catch (error) {
+                console.error("Error uploading video:", error);
+            }
         };
     </script>
 </body>

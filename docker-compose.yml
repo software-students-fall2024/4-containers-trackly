@@ -14,8 +14,8 @@ services:
 
   flask-app:
     build: 
-      context: ./web-app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: web-app/Dockerfile
     container_name: flask-app
     ports:
       - "5001:5001"

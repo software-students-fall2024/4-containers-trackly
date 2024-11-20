@@ -5,11 +5,15 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy the app code into container
-COPY . /app
+COPY web-app/ /app
+
+# Copy machine-learning-client folder into container
+COPY machine-learning-client/ /app/machine-learning-client
 
 # Upgrade pip
 RUN python -m pip install --upgrade pip
 RUN pip install requests
+
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
