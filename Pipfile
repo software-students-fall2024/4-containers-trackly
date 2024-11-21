@@ -8,14 +8,4 @@ pylint = "*"
 black = "*"
 flask = "*"
 pymongo = "*"
-requests = "*"
-python-dotenv = "*"
-pytest = "*"
-opencv-python-headless = "*"
-opencv-python = "*"
-
-
-[dev-packages]
-
-[requires]
-python_version = "3.10"
+r

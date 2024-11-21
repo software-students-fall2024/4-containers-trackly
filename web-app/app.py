@@ -172,7 +172,7 @@ def create_app():
                 response = requests.post(ml_client_url, files={"file": video})
             if response.status_code == 200:
                 result = response.json()
-                print("Video processed successfully:", result)
+                app.logger.info("Video processed successfully:", result)
 
                 total_time = result.get("total_time")
                 focused_time = result.get("focused_time")
@@ -186,14 +186,14 @@ def create_app():
                         "timestamp": time.time()
                     }
                     app.db["sessions"].insert_one(session_data)
-                    print("Session data saved")
+                    app.logger.info("Session data saved")
 
                 return redirect(url_for('session_details', total_time = result['total_time'], focused_time=result['focused_time']))
             else:
-                print("Error in processing video:", response.text)
+                app.logger.info("Error in processing video:", response.text)
                 return jsonify({"error app.py": "ML client error", "details": response.text}), response.status_code
         except requests.ConnectionError as e:
-            print(f"Error connecting to ML client: {e}")
+            app.logger.info(f"Error connecting to ML client: {e}")
             return jsonify({"error": "Unable to connect to ML Client", "details": str(e)}), 500
 
     return app
