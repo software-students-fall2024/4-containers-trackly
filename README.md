@@ -69,7 +69,7 @@ pipenv shell
 ### 5. Build and run docker containers
 
 ```
-docker compose build --parallel && docker compose up -d
+bash run-docker.sh
 ```
 
 ### 6. Stop docker containers
