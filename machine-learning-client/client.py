@@ -77,13 +77,13 @@ def process_video():
         try:
             video_path = os.path.join("/tmp", uploaded.filename)
             app.logger.info(uploaded)
-            # uploaded.save(video_path)
+            uploaded.save(video_path)
             app.logger.info(f"File saved to: {video_path}")
 
             ## Machine Learning algorithm for calculation here
             total_time, focused_time = 0, 0
             try:
-                total_time, focused_time = start_camera(uploaded)
+                total_time, focused_time = start_camera(video_path)
             except:
                 app.logger.info("client.py, start-camera failed")
 
@@ -95,6 +95,7 @@ def process_video():
                 "total_time": total_time,
                 "focused_time": focused_time
             }
+            app.logger.info(f"Processed video: total_time={total_time}, focused_time={focused_time}")
             return jsonify(result), 200
         except Exception as e:
             return jsonify({"client.py error": str(e)}), 500

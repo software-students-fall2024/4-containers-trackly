@@ -51,8 +51,13 @@ def start_camera(output_video):
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
         
-        video_path = os.path.join("/tmp", output_video.filename)
-        output_video.save(video_path)
+        if hasattr(output_video, "filename"):
+            video_path = os.path.join("/tmp", output_video.filename)
+            output_video.save(video_path)
+        else:
+            video_path = output_video
+
+        logger.info(f"Video path: {video_path}")
         
         cap = cv2.VideoCapture(video_path)
         # cap = cv2.VideoCapture(0)
