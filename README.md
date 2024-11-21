@@ -1,6 +1,6 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
 [![Run ML Tests](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml)
-![Test-Web](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-Test.yml))
+[![Test-Web](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-Test.yml)
 
 # Containerized App Exercise
 
@@ -79,6 +79,7 @@ docker compose down
 ```
 
 ### Usage
+
 1. Build and launch app using instructions above for setup
 2. Access Trackly at http://localhost:5001
 3. Start session and monitor productivity through the web app using the camera module
@@ -98,17 +99,18 @@ docker compose down
 │   ├── Pipfile.lock
 │   ├── readme.txt
 │   ├─ requirments.text 
-│   └── SOON:test_client or test_module.py
+│   └── ML-Test.py
 ├── mongoddb
 │   └── Dockerfile
 ├── web-app
 │   ├── static
-│   │   ├── css
-│   │   │   └── index.css
-│   │   └── app.js
+│   │   ├── Logo.png
+│   │   └── StudyBoy.png
 │   ├── templates
+│   ├── ├─ home.html
+│   ├── ├─ session-details.html
 │   ├── ├─ start-focusing.html
-│   │   └── home.html
+│   │   └── start-session.html
 │   ├── app.py
 │   ├── Docker-compose.yml
 │   ├── Dockerfile
@@ -116,12 +118,14 @@ docker compose down
 │   ├── Pipfile.lock
 │   ├── readme.txt
 │   ├── requirements.txt
-│   └── SOON:test_app.py
+│   └── web-test.py
 ├── .gitignore
 ├── docker-compose.yml
 ├── instructions.md
 ├── LICENSE
-└── README.md
+├── README.md
+├── requirements.txt
+└── run-docker.sh
 ```
 
 ## Task Boards
@@ -132,6 +136,10 @@ docker compose down
 - [Ethan Cheng (ehc7678)](https://github.com/ethanhcheng)
 - [Nuzhat Bushra(ntb5562)](https://github.com/ntb5562)
 - [Tamara Bueno (tb2803)](https://github.com/TamaraBuenoo)
+
+## Notes
+
+This project is meant to be run on Google Chrome. Additionally, for aaccurate transcription, please wait 10 seconds before and between starting the recording. [Pro Tip: Wait for all the Docker Containers to Run]
 
 ## Acknowledgements 
 
