@@ -137,7 +137,7 @@ docker compose down
 
 ## Notes
 
-This project is meant to be run on Google Chrome. Additionally, for aaccurate transcription, please wait 10 seconds before and between starting the recording. [Pro Tip: Wait for all the Docker Containers to Run]
+This project is meant to be run on Google Chrome. Additionally, for an accurate transcription, please wait 10 seconds before and between starting the recording. [Pro Tip: Wait for all the Docker Containers to Run]
 
 ## Acknowledgements 
 
