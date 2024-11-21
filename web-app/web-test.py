@@ -1,4 +1,4 @@
 import pytest
 
-def web_app_test():
+def test_web_app():
     assert True
