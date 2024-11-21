@@ -1,5 +1,5 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
-![Test-ML]()
+[![Run ML Tests](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml)
 ![Test-Web]()
 
 # Containerized App Exercise
