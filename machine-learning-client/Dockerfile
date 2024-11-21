@@ -18,6 +18,18 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx libx11-xcb1 libxcb-xinerama0 libxkbcommon-x11-0 \
+    xvfb && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir opencv-python-headless
+
+# Set environment variable for Qt plugins
+ENV QT_QPA_PLATFORM_PLUGIN_PATH=/usr/local/lib/python3.10/site-packages/cv2/qt/plugins
+
 # Install pipenv
 RUN pip install flask
 
@@ -33,4 +45,6 @@ RUN pipenv install --deploy --ignore-pipfile
 RUN pip install -r requirements.txt
 
 # Define the default command to run the client
-CMD ["python", "client.py"]
+CMD ["python", "client.py"] 
+
+# "client.py"

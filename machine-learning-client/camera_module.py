@@ -67,16 +67,14 @@ def start_camera(output_video):
         #     logger.info("Could not open writer{output_video.filename}")
         #     logger.info(e)
         total_time = 0
-        focus_time = 0
+        focus_time = 0.0
         session_start_time = time.time()
         start_time = None
-
-        print("Press 'q' to stop the camera")
 
         while True:
             ret, frame = cap.read()
             if not ret:
-                logger.info("not ret")
+                logger.info("End of video or read error")
                 break
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -92,8 +90,8 @@ def start_camera(output_video):
                 start_time = None
 
             total_time = time.time() - session_start_time
-            if total_time==0:
-                logger.info("total time not changed")
+            if total_time < 0.01:  # Log for very short durations
+                logger.info("Total time not significantly changed")
 
             for (x, y, w, h) in faces:
                 roi_gray = gray[y:y+h, x:x+w]
@@ -102,25 +100,24 @@ def start_camera(output_video):
                 for (ex, ey, ew, eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
 
-            cv2.putText(frame, f"Focus Time: {focus_time:.2f} sec", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
-                        1, (255, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(frame, f"Total Time: {total_time:.2f} sec", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 
-                        1, (0, 255, 255), 2, cv2.LINE_AA)
-            cv2.imshow('Focus Monitor', frame)
+            # cv2.putText(frame, f"Focus Time: {focus_time:.2f} sec", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+            #             1, (255, 0, 0), 2, cv2.LINE_AA)
+            # cv2.putText(frame, f"Total Time: {total_time:.2f} sec", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 
+            #             1, (0, 255, 255), 2, cv2.LINE_AA)
+            # cv2.imshow('Focus Monitor', frame)
 
             # out.write(frame)
+        logger.info(f"focus time: {focus_time:.2f}, total time: {total_time:.2f}")
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                print("Stopping camera")
-                break
-
-        cap.release()
-        # out.release()
-        cv2.destroyAllWindows()
         return total_time, focus_time
+    
     except Exception as e:
         logger.error(e)
         return None, None
+    finally:
+        cap.release()
+        # out.release()
+        cv2.destroyAllWindows()
 
     
 
