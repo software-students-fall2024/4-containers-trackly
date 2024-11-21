@@ -113,8 +113,9 @@ def create_app():
     def session_details():
         total_time = request.args.get('total_time', default=0, type=float)
         focused_time = request.args.get('focused_time', default=0, type=float)
+        focus_percentage = (focused_time / total_time) * 100 if total_time > 0 else 0
         app.logger.info(f"Session details: total_time={total_time}, focused_time={focused_time}")
-        return render_template('session-details.html', total_time=total_time, focused_time=focused_time)
+        return render_template('session-details.html', total_time=total_time, focused_time=focused_time, focus_percentage=focus_percentage)
 
     @app.route('/file-data', methods=['POST'])
     def handle_video_upload():

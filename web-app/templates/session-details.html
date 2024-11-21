@@ -20,8 +20,25 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        p {
-            margin: 10px 0;
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+        .buttons a {
+            text-decoration: none;
+            color: inherit;
         }
     </style>
 </head>
@@ -30,6 +47,11 @@
     <div class="details">
         <p><strong>Total Time:</strong> {{ total_time }} seconds</p>
         <p><strong>Focused Time:</strong> {{ focused_time }} seconds</p>
+        <p><strong>Focus Percentage:</strong> {{ focus_percentage }}%</p>
+    </div>
+    <div class="buttons">
+        <button><a href="{{ url_for('home') }}">Home</a></button>
+        <button><a href="{{ url_for('start_focusing') }}">Start New Session</a></button>
     </div>
 </body>
 </html>
