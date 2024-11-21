@@ -96,5 +96,9 @@ docker compose down
 ## Team Members
 - [Hugo Bray (hwb4547)](https://github.com/BringoJr)
 - [Ethan Cheng (ehc7678)](https://github.com/ethanhcheng)
-- [Nuzhat Bushra(ntb5562@nyu.edu)](https://github.com/ntb5562)
+- [Nuzhat Bushra(ntb5562)](https://github.com/ntb5562)
 - [Tamara Bueno (tb2803)](https://github.com/TamaraBuenoo)
+
+## Acknowledgements 
+
+We used online tutorials and forums. We got a LOT of help from the tutor. And we'd like to dedicated this section as a Thank you to Shambhavi for dedicating extra time to help us. <3
