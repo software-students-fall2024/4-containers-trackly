@@ -10,9 +10,10 @@ from dotenv import load_dotenv
 import subprocess
 import sys
 import time
+import logging
 
 sys.path.append('/app/machine-learning-client')
-from camera_module import start_camera
+# from camera_module import start_camera
 
 load_dotenv()
 
@@ -24,6 +25,14 @@ def create_app():
     """
 
     app = Flask(__name__)
+    logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
 
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 
@@ -109,11 +118,17 @@ def create_app():
         video_path = "session_video.avi"
         
         try:
-            total_time, focused_time = start_camera(video_path)
-            session_data = {
-                "total_time": total_time,
-                "focused_time": focused_time
-            }
+            # total_time, focused_time = start_camera(video_path)
+            # session_data = {
+            #     "total_time": total_time,
+            #     "focused_time": focused_time
+            # }
+            ml_video_info = "http://machine-learning-client:5002/process-video"
+            response = requests.get(ml_video_info)
+            if response.status_code != 200:
+                return jsonify({"error": str(e)}), {response.status_code}
+            
+            session_data = response.json()
 
             ml_client_url = "http://machine-learning-client:5002/process-session"
             response = requests.post(ml_client_url, json=session_data)
@@ -136,7 +151,9 @@ def create_app():
     @app.route('/file-data', methods=['POST'])
     def handle_video_upload():
         # Retrieve the uploaded file
+        app.logger.info(request.files)
         uploaded_file = request.files.get("file")
+        app.logger.info(uploaded_file)
         if not uploaded_file:
             return jsonify({"error": "No file"}), 400
         
@@ -144,6 +161,7 @@ def create_app():
         
         # Save the file temporarily
         video_path = "uploaded_video.webm"
+        app.logger.info("testing file-data upload ")
         uploaded_file.save(video_path)
         
         # Send the video to the ML client for processing
@@ -173,7 +191,7 @@ def create_app():
                 return redirect(url_for('session_details', total_time = result['total_time'], focused_time=result['focused_time']))
             else:
                 print("Error in processing video:", response.text)
-                return jsonify({"error": "ML client error", "details": response.text}), response.status_code
+                return jsonify({"error app.py": "ML client error", "details": response.text}), response.status_code
         except requests.ConnectionError as e:
             print(f"Error connecting to ML client: {e}")
             return jsonify({"error": "Unable to connect to ML Client", "details": str(e)}), 500

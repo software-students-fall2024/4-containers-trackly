@@ -51,35 +51,62 @@
 #         print(f"An error occurred rip: {e}")
 from flask import Flask, request, jsonify
 import os
+from camera_module import start_camera
+import logging
 
 app = Flask(__name__)
 
-@app.route('/process-video', methods=['POST'])
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
+result = {}
+
+@app.route('/process-video', methods=['GET','POST'])
 def process_video():
-
-    uploaded = request.files.get("file")
-    if not uploaded:
-        app.logger.error("No video file")
-        return jsonify({"error": "No video file"})
-    
-    try:
-        video_path = os.path.join("/tmp", uploaded.filename)
-        uploaded.save(video_path)
-        app.logger.info(f"File saved to: {video_path}")
-
-        ## Machine Learning algorithm for calculation here
+    if request.method=='POST':
+        uploaded = request.files.get("file")
+        if not uploaded:
+            app.logger.error("No video file")
+            return jsonify({"error": "No video file"})
         
-        total_time = 600
-        focused_time = 450
+        try:
+            video_path = os.path.join("/tmp", uploaded.filename)
+            app.logger.info(uploaded)
+            # uploaded.save(video_path)
+            app.logger.info(f"File saved to: {video_path}")
 
-        result = {
-            "message": "Processed",
-            "total_time": total_time,
-            "focused_time": focused_time
-        }
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+            ## Machine Learning algorithm for calculation here
+            total_time, focused_time = 0, 0
+            try:
+                total_time, focused_time = start_camera(uploaded)
+            except:
+                app.logger.info("client.py, start-camera failed")
+
+            # total_time = 600
+            # focused_time = 450
+
+            result = {
+                "message": "Processed",
+                "total_time": total_time,
+                "focused_time": focused_time
+            }
+            return jsonify(result), 200
+        except Exception as e:
+            return jsonify({"client.py error": str(e)}), 500
+    elif request.method == 'GET':
+       try:
+           if not result:
+               return jsonify({"error": "No processed data available"}), 404
+           return jsonify(result), 200
+       except Exception as e:
+           app.logger.error(f"Error retrieving processed data: {str(e)}")
+           return jsonify({"error": str(e)}), 500
+
 
 @app.route('/process-session', methods=['POST'])
 def process_session():
@@ -87,8 +114,6 @@ def process_session():
     data = request.json
     total_time = data.get("total_time")
     focused_time = data.get("focused_time")
-    focus_percentage
-    insight
 
     if total_time is None or focused_time is None:
         return jsonify({"error": "Invalid session data"}), 400
