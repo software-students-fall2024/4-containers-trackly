@@ -19,9 +19,6 @@ services:
     container_name: flask-app
     ports:
       - "5001:5001"
-    depends_on:
-      - database
-      - machine-learning-client
     networks:
       - shared-network
     environment:
@@ -39,8 +36,6 @@ services:
       - 5002:5002
     environment:
       - MONGO_URI=mongodb://mongodb:27017
-    depends_on:
-      - database
     networks:
       - shared-network
     restart: unless-stopped
