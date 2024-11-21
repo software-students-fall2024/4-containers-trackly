@@ -141,4 +141,4 @@ This project is meant to be run on Google Chrome. Additionally, for an accurate 
 
 ## Acknowledgements 
 
-We used online tutorials and forums. We got a LOT of help from the tutor. And we'd like to dedicated this section as a Thank you to Shambhavi for dedicating extra time to help us. <3
+We used online tutorials, forums, and a huge effort from the whole team. We got a LOT of help from the tutor. And we'd like to dedicated this section as a Thank you to Shambhavi for dedicating extra time to help us. <3
