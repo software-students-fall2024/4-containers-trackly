@@ -1,6 +1,6 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
 [![Run ML Tests](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/ML-Test.yml)
-![Test-Web]()
+![Test-Web](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-test.yml/badge.svg)](https://github.com/software-students-fall2024/4-containers-trackly/actions/workflows/web-test.yml))
 
 # Containerized App Exercise
 
@@ -8,49 +8,36 @@
 
 Trackly
 
+## Table of Contents
+1. [Project Description](#project-description)
+2. [Features](#features)
+3. [Technologies Used](#technologies-used)
+4. [Setup Instructions](#setup-instructions)
+5. [Usage](#usage)
+6. [Project Structure](#project-structure)
+7. [Task Board](#task-board)
+8. [Team Members](#team-members)
+9. [Acknowledgements](#acknowledgements)
+
 ### Project Description 
 
 Trackly is your virtual study companion that uses eye-tracking technology to monitor focus and help you stay on task. By ensuring you maintain consistent attention, Trackly keeps you accountable and maximizes your productivity. 
 
-### Project structure
+### Features
 
-```text
-.
-├── machine_learning_client
-│   ├── camera_module.py
-│   ├── client.py
-│   ├── database.py
-│   ├── docker-compose.yml
-│   ├── Dockerfile
-│   ├── Pipfile
-│   ├── Pipfile.lock
-│   ├── readme.txt
-│   ├─ requirments.text 
-│   └── SOON:test_client or test_module.py
-├── mongoddb
-│   └── Dockerfile
-├── web-app
-│   ├── static
-│   │   ├── css
-│   │   │   └── index.css
-│   │   └── app.js
-│   ├── templates
-│   ├── ├─ start-focusing.html
-│   │   └── home.html
-│   ├── app.py
-│   ├── Docker-compose.yml
-│   ├── Dockerfile
-│   ├── Pipfile
-│   ├── Pipfile.lock
-│   ├── readme.txt
-│   ├── requirements.txt
-│   └── SOON:test_app.py
-├── .gitignore
-├── docker-compose.yml
-├── instructions.md
-├── LICENSE
-└── README.md
-```
+- Eye-Tracking: Uses camera input to monitor eyes to determine focus
+- Productivity Report: Generates session statistic
+- User-Friendly: Intuitive application with appealing visuals
+- Modular Architechture: Organized codebase for machine learning, web app, and database
+- Environment: Runs seamlessly in containerized environments using Docker
+
+### Technologies Used
+
+- Languages: Python (Flask and ML models), Javascript, HTML
+- Frameworks & Libraries: Flask, TensorFlow, OpenCV
+- Databases: MongoDB
+- Tools: Docker, pipenv, FFmpeg
+- CI/CD: Github actions
 
 ## Setup Instructions
 
@@ -90,7 +77,54 @@ docker compose up --build -d
 ```
 docker compose down
 ```
-## Task boards
+
+### Usage
+1. Build and launch app using instructions above for setup
+2. Access Trackly at http://localhost:5001
+3. Start session and monitor productivity through the web app using the camera module
+4. View session details
+
+## Project Structure
+
+```text
+.
+├── machine_learning_client
+│   ├── camera_module.py
+│   ├── client.py
+│   ├── database.py
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── readme.txt
+│   ├─ requirments.text 
+│   └── SOON:test_client or test_module.py
+├── mongoddb
+│   └── Dockerfile
+├── web-app
+│   ├── static
+│   │   ├── css
+│   │   │   └── index.css
+│   │   └── app.js
+│   ├── templates
+│   ├── ├─ start-focusing.html
+│   │   └── home.html
+│   ├── app.py
+│   ├── Docker-compose.yml
+│   ├── Dockerfile
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── readme.txt
+│   ├── requirements.txt
+│   └── SOON:test_app.py
+├── .gitignore
+├── docker-compose.yml
+├── instructions.md
+├── LICENSE
+└── README.md
+```
+
+## Task Boards
 [The Task board for our team](https://github.com/orgs/software-students-fall2024/projects/109)
 
 ## Team Members
