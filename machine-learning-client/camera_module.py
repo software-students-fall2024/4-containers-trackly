@@ -60,10 +60,12 @@ def start_camera(output_video):
         if not cap.isOpened():
             logger.info("cap not working")
             raise Exception("Could not open" + output_video)
-        
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter(video_path, fourcc, 20.0, (640, 480))
-        
+        # try:
+        #   fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        #   out = cv2.VideoWriter(video_path, fourcc, 20.0, (640, 480))
+        # except Exception as e:
+        #     logger.info("Could not open writer{output_video.filename}")
+        #     logger.info(e)
         total_time = 0
         focus_time = 0
         session_start_time = time.time()
@@ -113,7 +115,7 @@ def start_camera(output_video):
                 break
 
         cap.release()
-        out.release()
+        # out.release()
         cv2.destroyAllWindows()
         return total_time, focus_time
     except Exception as e:
