@@ -51,17 +51,18 @@ def start_camera(output_video):
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
         
-        # temp_path = "temp_video.webm"
-        # output_video.save(temp_path)
-        cap = cv2.VideoCapture(output_video)
+        video_path = os.path.join("/tmp", output_video.filename)
+        output_video.save(video_path)
+        
+        cap = cv2.VideoCapture(video_path)
         # cap = cv2.VideoCapture(0)
         # cap.
         if not cap.isOpened():
             logger.info("cap not working")
-            raise Exception("Could not access webcam")
+            raise Exception("Could not open" + output_video)
         
-        # fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        # out = cv2.VideoWriter(output_video, fourcc, 20.0, (640, 480))
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter(video_path, fourcc, 20.0, (640, 480))
         
         total_time = 0
         focus_time = 0
@@ -112,7 +113,7 @@ def start_camera(output_video):
                 break
 
         cap.release()
-        # out.release()
+        out.release()
         cv2.destroyAllWindows()
         return total_time, focus_time
     except Exception as e:

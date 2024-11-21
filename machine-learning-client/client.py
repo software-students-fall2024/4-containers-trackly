@@ -83,7 +83,7 @@ def process_video():
             ## Machine Learning algorithm for calculation here
             total_time, focused_time = 0, 0
             try:
-                total_time, focused_time = start_camera(video_path)
+                total_time, focused_time = start_camera(uploaded)
             except:
                 app.logger.info("client.py, start-camera failed")
 
