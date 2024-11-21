@@ -1,3 +1,4 @@
 import pytest
 
-assert True
+def ML_test():
+    assert True
