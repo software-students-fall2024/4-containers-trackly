@@ -11,6 +11,7 @@ pymongo = "*"
 requests = "*"
 python-dotenv = "*"
 pytest = "*"
+opencv-python = "*"
 
 [dev-packages]
 
