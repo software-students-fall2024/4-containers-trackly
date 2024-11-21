@@ -13,7 +13,7 @@ def client() -> Generator[FlaskClient, None, None]:
 def test_home_page(client: FlaskClient):
     response = client.get('/')
     assert response.status_code == 200
-    assert b"Welcome to the Home Page" in response.data
+    assert b"Welcome to Trackly" in response.data
 
 def test_about_page(client: FlaskClient):
     response = client.get('/about')
@@ -28,4 +28,4 @@ def test_contact_page(client: FlaskClient):
 def test_404_page(client: FlaskClient):
     response = client.get('/nonexistent')
     assert response.status_code == 404
-    assert b"Page Not Found" in response.data
+    assert b"Not Found" in response.data

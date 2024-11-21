@@ -18,21 +18,15 @@ sys.path.append('/app/machine-learning-client')
 load_dotenv()
 
 def create_app():
-
-    """
-    Configure Flask Application
-    Returns: Flask App
-    """
-
     app = Flask(__name__)
     logging.basicConfig(
-    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
-    handlers=[
-        logging.StreamHandler(),  # Log to the console
-        logging.FileHandler("app.log")  # Log to a file (optional)
-    ]
-)
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler("app.log")
+        ]
+    )
 
     mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 
@@ -46,23 +40,18 @@ def create_app():
         print("Connected to MongoDB")
     except errors.ServerSelectionTimeoutError as con_e:
         print(f"Error connecting to MongoDB Database: {con_e}")
-        app.db =  None
+        app.db = None
     except errors.ConfigurationError as fig_e:
         print(f"Error configuring MongoDB Database: {fig_e}")
         app.db = None
 
     @app.route("/", methods=['GET', 'POST'])
     def home():
-        """
-        Serves home page
-        """
         if request.method == 'POST':
-            # Handle the form submission
             name = request.form.get('name')
             task = request.form.get('task')
             time = request.form.get('time')
 
-            # Insert into the "tasks" collection
             if app.db:
                 app.db["tasks"].insert_one({"name": name, "task": task, "time": time})
                 tasks = list(app.db["tasks"].find({}, {"_id": 0}))
@@ -70,12 +59,18 @@ def create_app():
             else:
                 print("Could not connect to database")
 
-            # Redirect to the start-focusing page
         return render_template("home.html")
+
+    @app.route("/about")
+    def about():
+        return render_template("about.html")
+
+    @app.route("/contact")
+    def contact():
+        return render_template("contact.html")
 
     @app.route('/start-focusing')
     def start_focusing():
-        # Render the start-focusing screen (replace with your actual HTML rendering logic)
         tasks = []
         try:
             if app.db:
@@ -90,39 +85,12 @@ def create_app():
         except Exception as e:
             print(f"Error starting session: {e}")
             return render_template("start-focusing.html", tasks=tasks, focus_time=focus_time)
-            
-        # tasks = list(app.db["tasks"].find({}, {"_id": 0}))
-        # if tasks:
-        #     print(f"Tasks: {tasks}")
-        # else:
-        #     print("No tasks found.")
-        # return render_template("start-focusing.html") #tasks=tasks
-    
-    def save_session_data(total_time, focused_time):
-        try:
-            focus_percentage = (focused_time / total_time) * 100 if total_time > 0 else 0
-            session_data = {
-                "total_time": total_time,
-                "focused_time": focused_time,
-                "focus_percentage": focus_percentage,
-                "timestamp": time.time()
-            }
-            app.db["sessions"].insert_one(session_data)
-            print("Session data saved")
-        except Exception as e:
-            print(f"Error saving session data: {e}")
 
     @app.route('/start-session', methods=['POST'])
     def start_session():
-
         video_path = "session_video.avi"
         
         try:
-            # total_time, focused_time = start_camera(video_path)
-            # session_data = {
-            #     "total_time": total_time,
-            #     "focused_time": focused_time
-            # }
             ml_video_info = "http://machine-learning-client:5002/process-video"
             response = requests.get(ml_video_info)
             if response.status_code != 200:
@@ -137,20 +105,18 @@ def create_app():
             session_data.update(ml_results)
             session_data["video_path"] = video_path
             db.sessions.insert_one(session_data)
-
             return jsonify({"message": "Session complete", "data": session_data}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-        
+
     @app.route('/session-details')
     def session_details():
         total_time = request.args.get('total_time', default=0, type=int)
         focused_time = request.args.get('focused_time', default=0, type=int)
         return render_template('session-details.html', total_time=total_time, focused_time=focused_time)
-    
+
     @app.route('/file-data', methods=['POST'])
     def handle_video_upload():
-        # Retrieve the uploaded file
         app.logger.info(request.files)
         uploaded_file = request.files.get("file")
         app.logger.info(uploaded_file)
@@ -159,13 +125,11 @@ def create_app():
         
         app.logger.info(f"Received file: {uploaded_file.filename} of type {uploaded_file.mimetype}")
         
-        # Save the file temporarily
         video_path = "uploaded_video.webm"
         app.logger.info("testing file-data upload ")
         uploaded_file.save(video_path)
         
-        # Send the video to the ML client for processing
-        ml_client_url = "http://machine-learning-client:5002/process-video"  # Replace with ML client URL
+        ml_client_url = "http://machine-learning-client:5002/process-video"
         
         try:
             with open(video_path, 'rb') as video:
