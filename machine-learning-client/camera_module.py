@@ -8,6 +8,17 @@ import time
 import os
 # from dotenv import load_dotenv
 from flask import Flask, request, jsonify
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # load_dotenv()
 
@@ -34,17 +45,6 @@ from flask import Flask, request, jsonify
 #         return jsonify(result), 200
 #     else:
 #         return jsonify({"error": "No file received"}), 400
-import logging
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
-    handlers=[
-        logging.StreamHandler(),  # Log to the console
-        logging.FileHandler("app.log")  # Log to a file (optional)
-    ]
-)
-logger = logging.getLogger(__name__)
 
 def start_camera(output_video):
     try:
@@ -112,7 +112,7 @@ def start_camera(output_video):
         return total_time, focus_time
     
     except Exception as e:
-        logger.error(e)
+        logger.error(f"An error occurred: {e}")
         return None, None
     finally:
         cap.release()

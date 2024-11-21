@@ -47,8 +47,11 @@ services:
     volumes:
       - shared_data:/shared
     privileged: true
+
 networks:
   shared-network:
+    driver: bridge
+
 volumes:
   mongo_data:
   shared_data:
