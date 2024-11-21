@@ -8,4 +8,11 @@ pylint = "*"
 black = "*"
 flask = "*"
 pymongo = "*"
-r
+requests = "*"
+python-dotenv = "*"
+pytest = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
