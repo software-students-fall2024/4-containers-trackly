@@ -111,9 +111,11 @@ def create_app():
 
     @app.route('/session-details')
     def session_details():
-        total_time = request.args.get('total_time', default=0, type=int)
-        focused_time = request.args.get('focused_time', default=0, type=int)
-        return render_template('session-details.html', total_time=total_time, focused_time=focused_time)
+        total_time = request.args.get('total_time', default=0, type=float)
+        focused_time = request.args.get('focused_time', default=0, type=float)
+        focus_percentage = (focused_time / total_time) * 100 if total_time > 0 else 0
+        app.logger.info(f"Session details: total_time={total_time}, focused_time={focused_time}")
+        return render_template('session-details.html', total_time=total_time, focused_time=focused_time, focus_percentage=focus_percentage)
 
     @app.route('/file-data', methods=['POST'])
     def handle_video_upload():
@@ -128,11 +130,28 @@ def create_app():
         video_path = "uploaded_video.webm"
         app.logger.info("testing file-data upload ")
         uploaded_file.save(video_path)
+
+        avi_path = "converted.avi"
+
+        try:
+            conversion_command = [
+                "ffmpeg",
+                "-y",
+                "-i", video_path,
+                "-c:v", "libx264",
+                "-preset", "ultrafast",
+                avi_path
+            ]
+            subprocess.run(conversion_command, check=True)
+            app.logger.info(f"Converted video saved to {avi_path}")
+        except subprocess.CalledProcessError as e:
+            app.logger.error(f"Error during video conversion: {e}")
+            return jsonify({"error": "Video conversion failed"}), 500
         
         ml_client_url = "http://machine-learning-client:5002/process-video"
         
         try:
-            with open(video_path, 'rb') as video:
+            with open(avi_path, 'rb') as video:
                 response = requests.post(ml_client_url, files={"file": video})
             if response.status_code == 200:
                 result = response.json()
@@ -152,6 +171,7 @@ def create_app():
                     app.db["sessions"].insert_one(session_data)
                     app.logger.info("Session data saved")
 
+                app.logger.info(f"Redirecting with total_time: {result['total_time']}, focused_time: {result['focused_time']}")
                 return redirect(url_for('session_details', total_time = result['total_time'], focused_time=result['focused_time']))
             else:
                 app.logger.info("Error in processing video:", response.text)

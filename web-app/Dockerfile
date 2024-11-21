@@ -14,6 +14,9 @@ COPY machine-learning-client/ /app/machine-learning-client
 RUN python -m pip install --upgrade pip
 RUN pip install requests
 
+# Install ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg && apt-get clean
+
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
