@@ -34,73 +34,95 @@ from flask import Flask, request, jsonify
 #         return jsonify(result), 200
 #     else:
 #         return jsonify({"error": "No file received"}), 400
+import logging
 
-    
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Log message format
+    handlers=[
+        logging.StreamHandler(),  # Log to the console
+        logging.FileHandler("app.log")  # Log to a file (optional)
+    ]
+)
+logger = logging.getLogger(__name__)
+
 def start_camera(output_video):
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-    
-    # temp_path = "temp_video.webm"
-    # file.save(temp_path)
+    try:
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+        
+        video_path = os.path.join("/tmp", output_video.filename)
+        output_video.save(video_path)
+        
+        cap = cv2.VideoCapture(video_path)
+        # cap = cv2.VideoCapture(0)
+        # cap.
+        if not cap.isOpened():
+            logger.info("cap not working")
+            raise Exception("Could not open" + output_video)
+        # try:
+        #   fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        #   out = cv2.VideoWriter(video_path, fourcc, 20.0, (640, 480))
+        # except Exception as e:
+        #     logger.info("Could not open writer{output_video.filename}")
+        #     logger.info(e)
+        total_time = 0
+        focus_time = 0
+        session_start_time = time.time()
+        start_time = None
 
-    # cap = cv2.VideoCapture(temp_path)
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        raise Exception("Could not access webcam")
-    
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_video, fourcc, 20.0, (640, 480))
-    
-    total_time = 0
-    focus_time = 0
-    session_start_time = time.time()
-    start_time = None
+        print("Press 'q' to stop the camera")
 
-    print("Press 'q' to stop the camera")
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                logger.info("not ret")
+                break
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-        if len(faces) > 0:
-            if start_time is None:
-                start_time = time.time()
+            if len(faces) > 0:
+                if start_time is None:
+                    start_time = time.time()
+                else:
+                    focus_time += time.time() - start_time
+                    start_time = time.time()
             else:
-                focus_time += time.time() - start_time
-                start_time = time.time()
-        else:
-            start_time = None
+                start_time = None
 
-        total_time = time.time() - session_start_time
+            total_time = time.time() - session_start_time
+            if total_time==0:
+                logger.info("total time not changed")
 
-        for (x, y, w, h) in faces:
-            roi_gray = gray[y:y+h, x:x+w]
-            roi_color = frame[y:y+h, x:x+w]
-            eyes = eye_cascade.detectMultiScale(roi_gray)
-            for (ex, ey, ew, eh) in eyes:
-                cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
+            for (x, y, w, h) in faces:
+                roi_gray = gray[y:y+h, x:x+w]
+                roi_color = frame[y:y+h, x:x+w]
+                eyes = eye_cascade.detectMultiScale(roi_gray)
+                for (ex, ey, ew, eh) in eyes:
+                    cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
 
-        cv2.putText(frame, f"Focus Time: {focus_time:.2f} sec", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
-                    1, (255, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(frame, f"Total Time: {total_time:.2f} sec", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 
-                    1, (0, 255, 255), 2, cv2.LINE_AA)
-        cv2.imshow('Focus Monitor', frame)
+            cv2.putText(frame, f"Focus Time: {focus_time:.2f} sec", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"Total Time: {total_time:.2f} sec", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (0, 255, 255), 2, cv2.LINE_AA)
+            cv2.imshow('Focus Monitor', frame)
 
-        out.write(frame)
+            # out.write(frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            print("Stopping camera")
-            break
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                print("Stopping camera")
+                break
 
-    cap.release()
-    out.release()
-    cv2.destroyAllWindows()
+        cap.release()
+        # out.release()
+        cv2.destroyAllWindows()
+        return total_time, focus_time
+    except Exception as e:
+        logger.error(e)
+        return None, None
 
-    return total_time, focus_time
+    
 
 
 

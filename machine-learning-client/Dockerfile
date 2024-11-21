@@ -4,6 +4,7 @@ FROM python:3.10-slim
 # Set the working directory in the container
 WORKDIR /app
 
+COPY . /app
 # Install system dependencies required for building Python packages
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -29,8 +30,7 @@ COPY Pipfile Pipfile.lock /app/
 # Install Python dependencies from Pipfile using pipenv
 RUN pipenv install --deploy --ignore-pipfile
 
-# Copy the rest of the application code into the container
-COPY . /app
+RUN pip install -r requirements.txt
 
 # Define the default command to run the client
 CMD ["python", "client.py"]
